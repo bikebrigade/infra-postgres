@@ -16,13 +16,15 @@ FROM flyio/stolon:cab0fc5  as stolon
 FROM wrouesnel/postgres_exporter:latest AS postgres_exporter
 
 FROM postgres:${PG_VERSION}
-ARG VERSION
+ARG POSTGIS_MAJOR=3
+ARG PG_MAJOR=12
 
 LABEL fly.app_role=postgres_cluster
 LABEL image_version=${VERSION}
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
     ca-certificates curl bash dnsutils vim-tiny procps jq \
+    postgis postgresql-${PG_MAJOR}-postgis-${POSTGIS_MAJOR} postgresql-${PG_MAJOR}-postgis-${POSTGIS_MAJOR}-scripts \ 
     && apt autoremove -y
 
 COPY --from=stolon /go/src/app/bin/* /usr/local/bin/
